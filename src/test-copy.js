@@ -6,14 +6,14 @@ var apikey = '7449f87051cf64139083805870b60575:13:74553905'
 // http://api.nytimes.com/svc/politics/{version}/us/legislative/congress/members/new[.response-format]?api-key={your-API-key}
 // http://api.nytimes.com/svc/politics/v3/us/legislative/congress/members/senate/il/1/current.json?api-key=7449f87051cf64139083805870b60575:13:74553905
 // http://api.nytimes.com/svc/politics/{version}/us/legislative/congress/members/{member-id}/bills/{type}[.response-format]?api-key={your-API-key}
-// http://api.nytimes.com/svc/politics/v3/us/legislative/congress/members/P000606.json?api-key=7449f87051cf64139083805870b60575:13:74553905
+// http://api.nytimes.com/svc/politics/v3/us/legislative/congress/members/A000360.json?api-key=7449f87051cf64139083805870b60575:13:74553905
 
 var str = '';
 var speechText = ""
 
 var options = {
   host: 'api.nytimes.com',
-  path: '/svc/politics/v3/us/legislative/congress/members/P000606/bills/introduced.json?api-key='
+  path: '/svc/politics/v3/us/legislative/congress/members/A000360/bills/introduced.json?api-key='
     + apikey
 };
 
@@ -30,7 +30,7 @@ callback = function(response) {
   });
 }
 
-//http.request(options, callback).end();
+http.request(options, callback).end();
 
 var states_hash =
   {
@@ -96,4 +96,4 @@ for (j in states_hash){
   states_reverse[states_hash[j]] = j
 }
 
-console.log(states_reverse["IL"]);
+//console.log(states_reverse["IL"]);
