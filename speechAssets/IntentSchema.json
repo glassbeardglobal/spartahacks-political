@@ -4,11 +4,24 @@
       "intent": "StartIntent"
     },
     {
-      "intent": "TopicLookupIntent",
+      "intent": "SenatorLookupIntent",
       "slots":[
         {
-          "name": "Topic",
-          "type": "LIST_OF_TOPICS"
+          "name": "State",
+          "type": "LIST_OF_STATES"
+        }
+      ]
+    },
+    {
+      "intent": "RepresentativeLookupIntent",
+      "slots":[
+        {
+          "name": "State",
+          "type": "LIST_OF_STATES"
+        },
+        {
+          "name": "District",
+          "type": "LIST_OF_DISTRICTS"
         }
       ]
     },

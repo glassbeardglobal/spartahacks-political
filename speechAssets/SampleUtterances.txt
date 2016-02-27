@@ -1,10 +1,10 @@
-StartIntent new york times
-StartIntent frames echo
-StartIntent frame
-StartIntent echo frame
-StartIntent echo frames
+StartIntent political echo
+StartIntent congress api
+StartIntent echo congress
 
-TopicLookupIntent find me {Topic}
-TopicLookupIntent look up {Topic}
-TopicLookupIntent tell me about {Topic}
-TopicLookupIntent search {Topic}
+SenatorLookupIntent who are senators for {State}
+SenatorLookupIntent who are the senators for {State}
+SenatorLookupIntent who are {State} senators
+
+RepresentativeLookupIntent who is the representative for {State} in district {District}
+RepresentativeLookupIntent who is the representative for {State} in district {District}
