@@ -26,6 +26,15 @@
       ]
     },
     {
+      "intent": "RepresentativeLookupByNameIntent",
+      "slots":[
+        {
+          "name": "Name",
+          "type": "LIST_OF_REP_NAMES"
+        }
+      ]
+    }
+    {
       "intent": "AMAZON.HelpIntent"
     },
     {
