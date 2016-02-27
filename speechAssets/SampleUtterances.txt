@@ -10,3 +10,7 @@ RepresentativeLookupIntent who is the representative for {State} in district {Di
 RepresentativeLookupIntent who is the representative for {State} in district {District}
 
 RepresentativeLookupByNameIntent what is the id for {Name}
+
+MoreInfoIntent tell me about {Name}
+MoreInfoIntent tell me more about {Name}
+MoreInfoIntent give me more information about {Name}
