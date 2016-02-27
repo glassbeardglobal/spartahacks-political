@@ -485,8 +485,6 @@ http.request(options, callback).end();
 
 
 
-
-
 function handleRepresentativeLookupByNameIntent(intent, session, response_g) {
     var speechText = "", repromptText = "";
 
@@ -513,7 +511,7 @@ function handleRepresentativeLookupByNameIntent(intent, session, response_g) {
           });
 
           //the whole response has been recieved, so we just print it out here
-          response.on('end', function() {
+          /*response.on('end', function() {
             result = JSON.parse(str);
             var reps = result["results"][0]["members"];
             for (var i = 0; i < reps.length; i++) {
@@ -521,7 +519,7 @@ function handleRepresentativeLookupByNameIntent(intent, session, response_g) {
               var rep_name = rep["first_name"]+ " " + rep["last_name"];
               console.log("'" + rep_name + "': '" + rep["id"] + "',");
             }
-          });
+          });*/
 
           //the whole response has been recieved, so we just print it out here
           response.on('end', function () {

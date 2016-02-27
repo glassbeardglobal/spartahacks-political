@@ -8,3 +8,5 @@ SenatorLookupIntent who are {State} senators
 
 RepresentativeLookupIntent who is the representative for {State} in district {District}
 RepresentativeLookupIntent who is the representative for {State} in district {District}
+
+RepresentativeLookupByNameIntent what is the id for {Name}
