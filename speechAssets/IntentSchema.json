@@ -44,6 +44,37 @@
       ]
     },
     {
+      "intent": "CompareVotingRecordsIntent",
+      "slots":[
+        {
+          "name": "NameA",
+          "type": "LIST_OF_REP_NAMES"
+        },
+        {
+          "name": "NameB",
+          "type": "LIST_OF_REP_NAMES"
+        }
+      ]
+    },
+    {
+      "intent": "RecentBillsIntent",
+      "slots":[
+        {
+          "name": "Name",
+          "type": "LIST_OF_REP_NAMES"
+        }
+      ]
+    },
+    {
+      "intent": "VoterIntent",
+      "slots":[
+        {
+          "name": "State",
+          "type": "LIST_OF_STATES"
+        }
+      ]
+    },
+    {
       "intent": "AMAZON.HelpIntent"
     },
     {

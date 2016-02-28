@@ -1,7 +1,7 @@
 /**
  * App ID for the skill
  */
-var APP_ID = undefined;
+var APP_ID = "amzn1.echo-sdk-ams.app.b1ac10bb-657f-43c4-b842-ea7747a1aa58";
 
 /**
  * The AlexaSkill prototype and helper functions
@@ -11,8 +11,11 @@ var AlexaSkill = require('./AlexaSkill');
 // Use the reqeusts module for API interfacing
 //var request = require('request');
 var http = require('http');
+var https = require('https');
+
 var ntykey = 'c380cb7ca5451be5de1601e4c896cccd:17:74553905'
 var apikey = '7449f87051cf64139083805870b60575:13:74553905'
+var googlekey = 'AIzaSyDcIki4Wj1bHoZhb0nhkxnccfQg33JfBto'
 
 
 function getID(name_p) {
@@ -1155,8 +1158,36 @@ PoliticalEcho.prototype.intentHandlers = {
         handleMoreInfoIntent(intent, session, response);
     },
 
+    "CompareVotingRecordsIntent": function (intent, session, response) {
+        handleCompareVotingRecordsIntent(intent, session, response);
+    },
+
+    "RecentBillsIntent": function (intent, session, response) {
+        handleRecentBillsIntent(intent, session, response);
+    },
+
+    "VoterIntent": function (intent, session, response) {
+        handleVoterIntent(intent, session, response);
+    },
+
+    "AMAZON.HelpIntent": function (intent, session, response) {
+        var speechText = "With Ask Political, you can ask me about senators, representatives, as well as more detailed insight. "
+            + "You can ask for more detail about a United States Congressman and even compare two congressman's voting history from the" 
+            + " same chamber. Additionally, I will find elections coming up in any provided state";
+        var repromptText = "What congressional topic would you like to explore?"
+        var speechOutput = {
+            speech: speechText,
+            type: AlexaSkill.speechOutputType.PLAIN_TEXT
+        };
+        var repromptOutput = {
+            speech: repromptText,
+            type: AlexaSkill.speechOutputType.PLAIN_TEXT
+        };
+        response.ask(speechOutput, repromptOutput);
+    },
+
     "AMAZON.StopIntent": function (intent, session, response) {
-        var speechOutput = "Bhangra my Surti";
+        var speechOutput = "Shivani my Patel";
         response.tell(speechOutput);
     },
 
@@ -1173,7 +1204,7 @@ function handleStartIntent(session, response) {
     var repromptText = "You can ask about the United States Congress.";
 
     //Check if session variables are already initialized.
-    speechText = "Learn about the members of the United States Congress";
+    speechText = "Ask Political, U.S. Congressional information";
     session.attributes.stage = 1;
 
     var speechOutput = {
@@ -1416,7 +1447,7 @@ function handleMoreInfoIntent(intent, session, response_g) {
             if (result["results"][0]["current_party"].localeCompare("R") === 0) {
                 speechText += " Republican "
             } else {
-                speechText += " Democrat "
+                speechText += " Democratic "
             }
 
             if (roles["chamber"].localeCompare("Senate") !== 0) {
@@ -1451,6 +1482,209 @@ function handleMoreInfoIntent(intent, session, response_g) {
         speechText = "Unable to find " + name;
         response_g.askWithCard(speechOutput, repromptOutput, "Political Echo", speechText);
     }
+}
+
+function handleCompareVotingRecordsIntent(intent, session, response_g) {
+    var speechText = "", repromptText = "";
+    var name1 = intent.slots.NameA.value.toLowerCase();
+    var name2 = intent.slots.NameB.value.toLowerCase();
+    var id1 = getID(name1);
+    var id2 = getID(name2);
+    var chamber;
+
+    if (name1 in rep_hash) {
+        chamber = 'house'
+    } else {
+        chamber = 'senate'
+    }
+
+    if (id1.localeCompare("error") !== 0 && id2.localeCompare("error") !== 0) {
+        var str = '';
+
+        var options = {
+          host: 'api.nytimes.com',
+          path: '/svc/politics/v3/us/legislative/congress/members/'
+            + id1
+            + '/votes/'
+            + id2
+            + '/113/'
+            + chamber
+            + '.json?api-key='
+            + apikey
+        };
+
+        console.log("URL FOR TESTING: " + options['host'] + options['path']);
+
+        callback = function(response) {
+          //another chunk of data has been recieved, so append it to `str`
+            response.on('data', function (chunk) {
+                str += chunk;
+            });
+
+              //the whole response has been recieved, so we just print it out here
+            response.on('end', function () {
+            result = JSON.parse(str);
+            percentage = result["results"][0]["agree_percent"].split(".");
+                
+            speechText += name1 + " and " + name2 + " agree on " + percentage[0] + " point " + percentage[1] + " percent of votes"
+
+            var speechOutput = {
+                speech: '<speak>' + speechText + '</speak>',
+                type: AlexaSkill.speechOutputType.SSML
+            };
+            var repromptOutput = {
+                speech: '<speak>' + repromptText + '</speak>',
+                type: AlexaSkill.speechOutputType.SSML
+            };
+            response_g.askWithCard(speechOutput, repromptOutput, "Political Echo", speechText);
+            });
+
+        }
+
+            http.request(options, callback).end();
+    } else {
+        var speechOutput = {
+            speech: '<speak>' + speechText + '</speak>',
+            type: AlexaSkill.speechOutputType.SSML
+        };
+        var repromptOutput = {
+            speech: '<speak>' + repromptText + '</speak>',
+            type: AlexaSkill.speechOutputType.SSML
+        };
+        speechText = "Unable to find candidates";
+        response_g.askWithCard(speechOutput, repromptOutput, "Political Echo", speechText);
+    }
+}
+
+function handleRecentBillsIntent(intent, session, response_g) {
+    var speechText = "", repromptText = "";
+    var name = intent.slots.Name.value.toLowerCase();
+    var id = getID(name);
+    // S000033/bills/introduced.json?api-key=7449f87051cf64139083805870b60575:13:74553905
+
+    if (id.localeCompare("error") !== 0) {
+        var str = '';
+
+        var options = {
+          host: 'api.nytimes.com',
+          path: '/svc/politics/v3/us/legislative/congress/members/'
+            + id
+            + '/bills/introduced.json?api-key='
+            + apikey
+        };
+
+        console.log("URL FOR TESTING: " + options['host'] + options['path']);
+
+        callback = function(response) {
+          //another chunk of data has been recieved, so append it to `str`
+            response.on('data', function (chunk) {
+                str += chunk;
+            });
+
+              //the whole response has been recieved, so we just print it out here
+            response.on('end', function () {
+                console.log("Recieved response");
+                result = JSON.parse(str);
+                console.log(result);
+                var billNum = parseInt(result["results"][0]["num_results"]);
+                console.log(billNum);
+
+                var bills = result["results"][0]["bills"]
+                var count = Math.floor(Math.random() * 3);
+                speechText += name + " has introduced bills including, "
+
+                while (count < billNum) {
+                    speechText += bills[count]["number"] + "<break time=\"0.5s\" />" + bills[count]["title"] + "<break time=\"0.5s\" />";
+                    count += Math.floor((Math.random() * 3) + 5);
+                    console.log(count);
+
+                    if (count >= billNum) {
+                        var speechOutput = {
+                            speech: '<speak>' + speechText + '</speak>',
+                            type: AlexaSkill.speechOutputType.SSML
+                        };
+                        var repromptOutput = {
+                            speech: '<speak>' + repromptText + '</speak>',
+                            type: AlexaSkill.speechOutputType.SSML
+                        };
+                        response_g.askWithCard(speechOutput, repromptOutput, "Political Echo", speechText);
+                    }
+                }
+            });
+        }
+
+        http.request(options, callback).end();
+    } else {
+        var speechOutput = {
+            speech: '<speak>' + speechText + '</speak>',
+            type: AlexaSkill.speechOutputType.SSML
+        };
+        var repromptOutput = {
+            speech: '<speak>' + repromptText + '</speak>',
+            type: AlexaSkill.speechOutputType.SSML
+        };
+        speechText = "Unable to find candidates";
+        response_g.askWithCard(speechOutput, repromptOutput, "Political Echo", speechText);
+    }
+}
+
+function handleVoterIntent(intent, session, response_g) {
+    var speechText = "No elections near this time!", repromptText = "";
+    var state = intent.slots.State.value.toLowerCase();
+
+    var str = '';
+
+    var options = {
+        host: 'www.googleapis.com',
+        path: '/civicinfo/v2/elections?key='
+            + googlekey
+    };
+
+    console.log("URL FOR TESTING: " + options['host'] + options['path']);
+
+    callback = function(response) {
+          //another chunk of data has been recieved, so append it to `str`
+        response.on('data', function (chunk) {
+            str += chunk;
+        });
+
+        //the whole response has been recieved, so we just print it out here
+        response.on('end', function () {
+            result = JSON.parse(str);
+            //console.log(result);
+            var elections = result["elections"]
+            for (var i = 0; i <= elections.length; i++) {
+                if (i == elections.length) {
+                    var speechOutput = {
+                        speech: '<speak>' + speechText + '</speak>',
+                        type: AlexaSkill.speechOutputType.SSML
+                    };
+                    var repromptOutput = {
+                        speech: '<speak>' + repromptText + '</speak>',
+                        type: AlexaSkill.speechOutputType.SSML
+                    };
+                    response_g.askWithCard(speechOutput, repromptOutput, "Political Echo", speechText);
+                }
+                console.log(elections[i]);
+                if (i !== elections.length)
+                    var x = elections[i]["ocdDivisionId"].slice(-2);
+                if (x.localeCompare(states_hash[state].toLowerCase()) === 0) {
+                    speechText = state + " primary will be held on " + elections[i]["electionDay"];
+                    var speechOutput = {
+                        speech: '<speak>' + speechText + '</speak>',
+                        type: AlexaSkill.speechOutputType.SSML
+                    };
+                    var repromptOutput = {
+                        speech: '<speak>' + repromptText + '</speak>',
+                        type: AlexaSkill.speechOutputType.SSML
+                    };
+                    response_g.askWithCard(speechOutput, repromptOutput, "Political Echo", speechText);
+                }
+            }
+        });
+    }
+
+    https.request(options, callback).end();
 }
 
 // Create the handler that responds to the Alexa Request.

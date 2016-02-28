@@ -5,12 +5,39 @@ StartIntent echo congress
 SenatorLookupIntent who are senators for {State}
 SenatorLookupIntent who are the senators for {State}
 SenatorLookupIntent who are {State} senators
+SenatorLookupIntent who is the senator of {State}
+SenatorLookupIntent who is the senator for {State}
+SenatorLookupIntent what is the senator of {State}
+SenatorLookupIntent who are senators of {State}
+SenatorLookupIntent name of {State} senators
+SenatorLookupIntent {State} senators
 
 RepresentativeLookupIntent who is the representative for {State} in district {District}
 RepresentativeLookupIntent who is the representative for {State} in district {District}
+RepresentativeLookupIntent name of {State} district {District} representative
+RepresentativeLookupIntent {State} district {District} representative
 
 RepresentativeLookupByNameIntent what is the id for {Name}
 
 MoreInfoIntent tell me about {Name}
 MoreInfoIntent tell me more about {Name}
 MoreInfoIntent give me more information about {Name}
+MoreInfoIntent give me information about {Name}
+
+CompareVotingRecordsIntent compare {NameA} and {NameB}
+CompareVotingRecordsIntent compare voting records of {NameA} and {NameB}
+CompareVotingRecordsIntent how do the voting records of {NameA} and {NameB} compare
+CompareVotingRecordsIntent voting records of {NameA} versus {NameB}
+
+RecentBillsIntent what bills has {Name} recently introduced
+RecentBillsIntent bills introduced by {Name}
+RecentBillsIntent bills invoked by {Name}
+RecentBillsIntent bills {Name} has introduced
+RecentBillsIntent what bills have {Name} introduced
+RecentBillsIntent what bills have {Name} recently introduced
+
+VoterIntent next election in {State}
+VoterIntent next election near {State}
+VoterIntent voting in {State}
+VoterIntent {State} election
+VoterIntent {State} voting
